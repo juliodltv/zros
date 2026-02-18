@@ -3,13 +3,6 @@
 ZROS mimics the ROS 2 workflow but uses ZeroMQ for communication.
 
 ### Create a Publisher (publisher.py)
-
-This example demonstrates how to capture images from a camera and publish them.
-
-1.  **OpenCV (`cv2`)**: Used to capture the video feed from your camera (`cv2.VideoCapture(0)`).
-2.  **`CvBridge`**: ZROS provides a helper class to convert OpenCV images/arrays into compressed bytes suitable for transmission.
-3.  **Payload**: ZROS sends data as a Python dictionary. This allows you to send multiple fields (e.g., "image", "timestamp", "metadata") in a single message.
-
 ```python
 from zros import Node, CvBridge
 import cv2
@@ -82,8 +75,7 @@ Visualizes the active nodes and their connections (Publishers -> Topics -> Subsc
 uv run zros_graph
 ```
 
-![ZROS Graph](assets/zros_graph_placeholder.png)
-*Run this command to see the network topology.*
+![ZROS Graph](assets/zros_graph.png)
 
 ### zros_pub (Publish)
 

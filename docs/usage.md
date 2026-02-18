@@ -69,3 +69,60 @@ uv run publisher.py
 # Terminal 3
 uv run subscriber.py
 ```
+
+## CLI Tools
+
+ZROS provides command-line tools to inspect and interact with the system.
+
+### zros_graph (Visualization)
+
+Visualizes the active nodes and their connections (Publishers -> Topics -> Subscribers).
+
+```bash
+uv run zros_graph
+```
+
+![ZROS Graph](assets/zros_graph_placeholder.png)
+*Run this command to see the network topology.*
+
+### zros_pub (Publish)
+
+Publishes a dictionary payload to a topic from the terminal.
+
+**Syntax:**
+```bash
+uv run zros_pub <TOPIC> <DICTIONARY_STRING> [--rate <HZ>]
+```
+
+**Example:**
+```bash
+uv run zros_pub /my_topic "{'message': 'Hello from CLI', 'count': 42}" --rate 0.5
+```
+*Note: The input keys and values should be between single quotes.*
+
+**Output:**
+```
+Publishing to /my_topic at 0.5 Hz: {'message': 'Hello from CLI', 'count': 42}
+```
+
+### zros_echo (Echo)
+
+Prints messages received on a topic to the console.
+
+**Syntax:**
+```bash
+uv run zros_echo <TOPIC>
+```
+
+**Example:**
+```bash
+uv run zros_echo /my_topic
+```
+
+**Output:**
+```
+Subscribed to /my_topic
+{'message': 'Hello from CLI', 'count': 42}
+{'message': 'Hello from CLI', 'count': 42}
+...
+```

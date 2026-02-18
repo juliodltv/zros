@@ -23,10 +23,15 @@ classifiers = [
 dependencies = [
     "opencv-python>=4.13.0.92",
     "pyzmq>=27.1.0",
+    "networkx>=3.2.1",
+    "matplotlib>=3.8.0",
 ]
 
 [project.scripts]
 zroscore = "zros.zroscore:main"
+zros_graph = "zros.zros_graph:main"
+zros_pub = "zros.zros_pub:main"
+zros_echo = "zros.zros_echo:main"
 
 [project.optional-dependencies]
 docs = [

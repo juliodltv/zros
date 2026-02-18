@@ -1,4 +1,4 @@
-# ZROS: ZeroMQ ROS-like Framework
+# ZROS: A fast, lightweight ROS-like library
 
 [![PyPI version](https://badge.fury.io/py/zros.svg)](https://badge.fury.io/py/zros)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

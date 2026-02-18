@@ -27,7 +27,8 @@ It provides a simple, pure Python alternative for robotic applications, computer
 
 ### From PyPI (Recommended)
 ```bash
-uv pip install zros
+uv venv --python 3.12
+uv pip install zros --upgrade
 ```
 
 ### From Source
@@ -39,7 +40,8 @@ uv sync
 
 ## Quick Start
 
-### Create a Publisher
+### Create a Publisher (publisher.py)
+
 ```python
 from zros import Node, CvBridge
 import cv2
@@ -55,13 +57,18 @@ class CameraPublisher(Node):
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            self.pub.publish({"image": self.bridge.cv2_to_msg(frame)})
+            # Payload is a dictionary
+            msg = {
+                "image": self.bridge.cv2_to_msg(frame),
+                "info": "My Camera Frame"
+            }
+            self.pub.publish(msg)
 
 if __name__ == "__main__":
     CameraPublisher().spin()
 ```
 
-### Create a Subscriber
+### Create a Subscriber (subscriber.py)
 ```python
 from zros import Node, CvBridge
 import cv2
@@ -82,21 +89,21 @@ if __name__ == "__main__":
 ```
 
 ## Running Examples
-You can find full examples in the `examples/` directory.
+You can find another examples in the `examples/` directory.
 
 ```bash
 # Terminal 1
 uv run zroscore
 
 # Terminal 2
-uv run publisher
+uv run publisher.py
 
 # Terminal 3
-uv run subscriber
+uv run subscriber.py
 ```
 
 ## Documentation
-For detailed usage instructions, examples, and API documentation, please refer to the [ZROS Documentation](https://juliodltv.github.io/zros/).
+For detailed usage instructions, please refer to the [ZROS Documentation](https://juliodltv.github.io/zros/).
 
 ## Citation
 

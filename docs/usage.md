@@ -2,7 +2,7 @@
 
 ZROS mimics the ROS 2 workflow but uses ZeroMQ for communication.
 
-### Create a Publisher
+### Create a Publisher (publisher.py)
 
 This example demonstrates how to capture images from a camera and publish them.
 
@@ -25,7 +25,7 @@ class CameraPublisher(Node):
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            # Payload is a dictionary!
+            # Payload is a dictionary
             msg = {
                 "image": self.bridge.cv2_to_msg(frame),
                 "info": "My Camera Frame"
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     CameraPublisher().spin()
 ```
 
-### Create a Subscriber
+### Create a Subscriber (subscriber.py)
 ```python
 from zros import Node, CvBridge
 import cv2
@@ -57,7 +57,7 @@ if __name__ == "__main__":
 ```
 
 ### Running Examples
-You can find full examples in the `examples/` directory.
+You can find another examples in the `examples/` directory.
 
 ```bash
 # Terminal 1

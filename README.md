@@ -6,7 +6,7 @@
 
 <div align="center">
   <img
-    src="https://github.com/user-attachments/assets/597527bb-1194-4af1-88c6-ab0f12e9cccd"
+    src="https://github.com/user-attachments/assets/a9d1d0d0-23df-4f1c-9462-415914c68fa9)"
     width="600"
     alt="zros_logo"
   />

@@ -18,7 +18,7 @@ class CameraPublisher(Node):
     def timer_callback(self):
         ret, frame = self.cap.read()
         if ret:
-            # Payload is a dictionary
+            # msg is a dictionary
             msg = {
                 "image": self.bridge.cv2_to_msg(frame),
                 "info": "My Camera Frame"
@@ -40,8 +40,10 @@ class VideoSubscriber(Node):
         self.bridge = CvBridge()
         self.create_subscriber("video_topic", self.callback)
 
-    def callback(self, payload):
-        img = self.bridge.msg_to_cv2(payload["image"])
+    def callback(self, msg):
+        img = self.bridge.msg_to_cv2(msg["image"])
+        # info = msg["info"]
+        # print(info)
         cv2.imshow("Video", img)
         cv2.waitKey(1)
 

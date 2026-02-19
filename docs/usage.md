@@ -67,7 +67,29 @@ uv run subscriber.py
 
 ZROS provides command-line tools to inspect and interact with the system.
 
-### zros_graph (Visualization)
+### zros_status
+
+Displays the currently active nodes and their topic connections (publishers and subscribers). It scans the network for a second and then prints the results hierarchically.
+
+```bash
+uv run zros_status
+```
+
+**Output:**
+```
+- camera_pub
+    Publishers:
+      - video_topic
+- video_sub
+    Subscribers:
+      - video_topic
+```
+
+### zros_graph
+
+!!! Warning
+    This feature has been moved to the `future` directory (available in the repository) because the dependencies increase the package size. If you want to use it, install the `networkx` and `matplotlib` dependencies and run `uv run future/zros_graph.py`.
+
 
 Visualizes the active nodes and their connections (Publishers -> Topics -> Subscribers).
 
@@ -77,7 +99,7 @@ uv run zros_graph
 
 ![ZROS Graph](assets/zros_graph.png)
 
-### zros_pub (Publish)
+### zros_pub
 
 Publishes a dictionary payload to a topic from the terminal.
 
@@ -97,7 +119,7 @@ uv run zros_pub /my_topic "{'message': 'Hello from CLI', 'count': 42}" --rate 0.
 Publishing to /my_topic at 0.5 Hz: {'message': 'Hello from CLI', 'count': 42}
 ```
 
-### zros_echo (Echo)
+### zros_echo
 
 Prints messages received on a topic to the console.
 

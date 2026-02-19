@@ -1,8 +1,5 @@
 # Installation
 
-!!! info "System Requirements"
-    The code automatically creates a Python 3.12 virtual environment.
-
 ## 1. Setting `UV`, the Python project manager
 
 To facilitate the creation of virtual environments and manage Python packages and their dependencies we use a state of the art framework [uv](https://docs.astral.sh/uv/), its installation is straightforward and can be done via the following command:
@@ -29,9 +26,12 @@ To facilitate the creation of virtual environments and manage Python packages an
         Install the latest stable release from the Python Package Index (PyPI).
 
     ```bash
-    uv venv --python 3.12
-    uv pip install zros --upgrade
+    uv venv
+    uv pip install zros
     ```
+
+    !!! info "System Requirements"
+    ZROS requires Python 3.8 or higher. If you have a previous version, you can create a virtual environment with a compatible version using `uv venv --python 3.8` or higher.
 
 === "From Source"
     !!! abstract "Recommended for developers"

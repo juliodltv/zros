@@ -27,8 +27,8 @@ It provides a simple, pure Python alternative for robotic applications, computer
 
 ### From PyPI (Recommended)
 ```bash
-uv venv --python 3.12
-uv pip install zros --upgrade
+uv venv
+uv pip install zros
 ```
 
 ### From Source

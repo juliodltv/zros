@@ -4,7 +4,7 @@ import time
 import numpy as np
 import cv2
 
-class CvBridge:
+class CompressedCVBridge:
     def cv2_to_msg(self, cv_image):
         """
         Converts a generic OpenCV image to compressed bytes.
@@ -21,6 +21,31 @@ class CvBridge:
         try:
             image_array = np.frombuffer(image_bytes, dtype=np.uint8)
             return cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+        except Exception as e:
+            print(f"CompressedCVBridge Error: {e}")
+            return None
+
+class CvBridge:
+    def cv2_to_msg(self, cv_image):
+        """
+        Converts a generic OpenCV image to a raw bytes dictionary message.
+        """
+        if cv_image is None:
+            return None
+        return {
+            "bytes": cv_image.tobytes(),
+            "shape": cv_image.shape,
+            "dtype": str(cv_image.dtype)
+        }
+
+    def msg_to_cv2(self, msg):
+        """
+        Converts a raw bytes dictionary message back to an OpenCV image.
+        """
+        if msg is None or "bytes" not in msg:
+            return None
+        try:
+            return np.frombuffer(msg["bytes"], dtype=msg["dtype"]).reshape(msg["shape"])
         except Exception as e:
             print(f"CvBridge Error: {e}")
             return None

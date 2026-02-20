@@ -1,1 +1,1 @@
-from .zros import Node, CvBridge
+from .zros import Node, CompressedCVBridge, CvBridge

@@ -21,7 +21,7 @@ It provides a simple, pure Python alternative for robotic applications, computer
 -   **Fast & Lightweight:** Built on top of **ZeroMQ**, ensuring low-latency communication between nodes.
 -   **ROS-like API:** Uses familiar concepts like `Node`, `Publisher`, `Subscriber`, `Timer`, and `spin()` making it easy for ROS-2 developers to adapt.
 -   **No Complex Build System:** Pure Python. No `catkin_make`, no `colcon build`, no `source setup.bash`. Just run your Python scripts.
--   **Computer Vision Ready:** Includes a built-in `CvBridge` for seamless OpenCV image transport.
+-   **Computer Vision Ready:** Includes a built-in `zCvBridge` for seamless OpenCV image transport, and `zCompressedCVBridge` which can optimize bandwidth usage up to 30x during transmission.
 
 ## Installation
 
@@ -43,14 +43,14 @@ uv sync
 ### Create a Publisher (publisher.py)
 
 ```python
-from zros import Node, CvBridge
+from zros import zNode, zCompressedCVBridge
 import cv2
 
-class CameraPublisher(Node):
+class CameraPublisher(zNode):
     def __init__(self):
         super().__init__("camera_pub")
         self.pub = self.create_publisher("video_topic")
-        self.bridge = CvBridge()
+        self.bridge = zCompressedCVBridge()
         self.cap = cv2.VideoCapture(0)
         self.create_timer(1/60, self.timer_callback)
 
@@ -59,7 +59,7 @@ class CameraPublisher(Node):
         if ret:
             # msg is a dictionary
             msg = {
-                "image": self.bridge.cv2_to_msg(frame),
+                "zimgmsg": self.bridge.cv2_to_zimgmsg(frame),
                 "info": "My Camera Frame"
             }
             self.pub.publish(msg)
@@ -70,17 +70,17 @@ if __name__ == "__main__":
 
 ### Create a Subscriber (subscriber.py)
 ```python
-from zros import Node, CvBridge
+from zros import zNode, zCompressedCVBridge
 import cv2
 
-class VideoSubscriber(Node):
+class VideoSubscriber(zNode):
     def __init__(self):
         super().__init__("video_sub")
-        self.bridge = CvBridge()
+        self.bridge = zCompressedCVBridge()
         self.create_subscriber("video_topic", self.callback)
 
     def callback(self, msg):
-        img = self.bridge.msg_to_cv2(msg["image"])
+        img = self.bridge.zimgmsg_to_cv2(msg["zimgmsg"])
         # info = msg["info"]
         # print(info)
         cv2.imshow("Video", img)

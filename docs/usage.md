@@ -2,16 +2,17 @@
 
 ZROS mimics the ROS 2 workflow but uses ZeroMQ for communication.
 
+
 ### Create a Publisher (publisher.py)
 ```python
-from zros import Node, CvBridge
+from zros import zNode, zCompressedCVBridge
 import cv2
 
-class CameraPublisher(Node):
+class CameraPublisher(zNode):
     def __init__(self):
         super().__init__("camera_pub")
         self.pub = self.create_publisher("video_topic")
-        self.bridge = CvBridge()
+        self.bridge = zCompressedCVBridge() # up to 30x more efficient bandwidth usage than zCvBridge
         self.cap = cv2.VideoCapture(0)
         self.create_timer(1/60, self.timer_callback)
 
@@ -20,7 +21,7 @@ class CameraPublisher(Node):
         if ret:
             # msg is a dictionary
             msg = {
-                "image": self.bridge.cv2_to_msg(frame),
+                "zimgmsg": self.bridge.cv2_to_zimgmsg(frame),
                 "info": "My Camera Frame"
             }
             self.pub.publish(msg)
@@ -31,17 +32,17 @@ if __name__ == "__main__":
 
 ### Create a Subscriber (subscriber.py)
 ```python
-from zros import Node, CvBridge
+from zros import zNode, zCompressedCVBridge
 import cv2
 
-class VideoSubscriber(Node):
+class VideoSubscriber(zNode):
     def __init__(self):
         super().__init__("video_sub")
-        self.bridge = CvBridge()
+        self.bridge = zCompressedCVBridge()
         self.create_subscriber("video_topic", self.callback)
 
     def callback(self, msg):
-        img = self.bridge.msg_to_cv2(msg["image"])
+        img = self.bridge.zimgmsg_to_cv2(msg["zimgmsg"])
         # info = msg["info"]
         # print(info)
         cv2.imshow("Video", img)

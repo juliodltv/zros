@@ -1,8 +1,8 @@
 import argparse
 import time
-from zros import Node
+from zros import zNode
 
-class ZrosStatus(Node):
+class ZrosStatus(zNode):
     def __init__(self):
         super().__init__(f"zros_status_{int(time.time())}")
         self.create_subscriber("_zros/graph", self.graph_callback)

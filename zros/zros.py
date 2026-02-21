@@ -4,8 +4,8 @@ import time
 import numpy as np
 import cv2
 
-class CompressedCVBridge:
-    def cv2_to_msg(self, cv_image):
+class zCompressedCVBridge:
+    def cv2_to_zimgmsg(self, cv_image):
         """
         Converts a generic OpenCV image to compressed bytes.
         Returns: bytes
@@ -13,20 +13,19 @@ class CompressedCVBridge:
         _, buffer = cv2.imencode('.jpg', cv_image)
         return buffer.tobytes()
 
-    def msg_to_cv2(self, image_bytes):
+    def zimgmsg_to_cv2(self, image_bytes):
         """
         Converts compressed bytes back to an OpenCV image.
-        Assuming BGR/Color by default.
         """
         try:
             image_array = np.frombuffer(image_bytes, dtype=np.uint8)
-            return cv2.imdecode(image_array, cv2.IMREAD_COLOR)
+            return cv2.imdecode(image_array, cv2.IMREAD_UNCHANGED)
         except Exception as e:
-            print(f"CompressedCVBridge Error: {e}")
+            print(f"zCompressedCVBridge Error: {e}")
             return None
 
-class CvBridge:
-    def cv2_to_msg(self, cv_image):
+class zCvBridge:
+    def cv2_to_zimgmsg(self, cv_image):
         """
         Converts a generic OpenCV image to a raw bytes dictionary message.
         """
@@ -38,7 +37,7 @@ class CvBridge:
             "dtype": str(cv_image.dtype)
         }
 
-    def msg_to_cv2(self, msg):
+    def zimgmsg_to_cv2(self, msg):
         """
         Converts a raw bytes dictionary message back to an OpenCV image.
         """
@@ -76,7 +75,7 @@ class Timer:
             self.callback()
             self.last_call = now
 
-class Node:
+class zNode:
     def __init__(self, name, ip="127.0.0.1", port_pub=5556, port_sub=5555):
         self.name = name
         self.context = zmq.Context()

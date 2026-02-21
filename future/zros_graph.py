@@ -1,8 +1,8 @@
 import networkx as nx
 import matplotlib.pyplot as plt
-from zros import Node
+from zros import zNode
 
-class ZrosGraph(Node):
+class ZrosGraph(zNode):
     def __init__(self):
         super().__init__("zros_graph_visualizer")
         self.create_subscriber("_zros/graph", self.graph_callback)

@@ -1,9 +1,9 @@
 import argparse
 import time
 import ast
-from zros import Node
+from zros import zNode
 
-class ZrosPub(Node):
+class ZrosPub(zNode):
     def __init__(self, topic, data, rate):
         super().__init__(f"zros_pub_{int(time.time())}")
         self.pub = self.create_publisher(topic)

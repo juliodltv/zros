@@ -1,8 +1,8 @@
 import argparse
 import time
-from zros import Node
+from zros import zNode
 
-class ZrosEcho(Node):
+class ZrosEcho(zNode):
     def __init__(self, topic):
         super().__init__(f"zros_echo_{int(time.time())}")
         self.create_subscriber(topic, self.callback)

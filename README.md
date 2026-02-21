@@ -2,7 +2,8 @@
 
 [![PyPI version](https://badge.fury.io/py/zros.svg)](https://badge.fury.io/py/zros)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python versions](https://img.shields.io/pypi/pyversions/zros.svg)](https://pypi.org/project/zros)
+[![Documentation](https://img.shields.io/badge/docs-MkDocs-blue.svg)](https://juliodltv.github.io/zros/)
+
 
 <div align="center">
   <img
@@ -22,6 +23,30 @@ It provides a simple, pure Python alternative for robotic applications, computer
 -   **ROS-like API:** Uses familiar concepts like `Node`, `Publisher`, `Subscriber`, `Timer`, and `spin()` making it easy for ROS-2 developers to adapt.
 -   **No Complex Build System:** Pure Python. No `catkin_make`, no `colcon build`, no `source setup.bash`. Just run your Python scripts.
 -   **Computer Vision Ready:** Includes a built-in `zCvBridge` for seamless OpenCV image transport, and `zCompressedCVBridge` which can optimize bandwidth usage up to 30x during transmission.
+-   **Bridge Legacy and Modern Environments:** Build hybrid architectures spanning Python 3.8 and Python 3.12+ gracefully over `localhost`.
+
+## Why ZROS? Bridging Legacy and Modern Robotics
+
+A major hurdle in modern robotics research is the software gap between established frameworks and cutting-edge AI.
+
+Projects using robust legacy systems like **ROS1 Noetic** are strictly tied to Python 3.8 and specific OS/hardware driver stacks. However, integrating state-of-the-art AI tools like **SAM3** (Segment Anything) requires modern Python 3.10+, updated PyTorch versions, and fresh dependencies.
+
+**Traditional workarounds fall short:**
+
+* Installing new ML libraries into a legacy `catkin_ws` almost always breaks the system with dependency hell.
+* Using **Docker** introduces friction: passing through physical GPUs/cameras is unreliable, networking ROS topics across container boundaries is tedious, and rebuilding containers ruins rapid prototyping.
+
+**The ZROS + `uv` Solution:**
+Run your hardware and control loops in their native ROS1 environment. Run your modern AI models in completely isolated, modern Python virtual environments managed by `uv`. **ZROS connects them instantly**. 
+
+**Example Usage:**
+```bash
+sjmp@pc:~$ rostopic pub -1 /detect_object/prompt std_msgs/String "data: 'hand'"
+```
+SAM3 Object Detection in ROS Noetic:
+![SAM3 Object Detection](assets/image_sam3.png)
+
+*Read the [full guide on Bridging Systems](https://juliodltv.github.io/zros/bridge_case/) in the documentation.*
 
 ## Installation
 

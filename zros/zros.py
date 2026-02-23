@@ -1,10 +1,23 @@
 import zmq
 import pickle
 import time
-import numpy as np
-import cv2
+
+try:
+    import numpy as np
+    import cv2
+    HAS_CV2 = True
+except ImportError:
+    HAS_CV2 = False
+
 
 class zCompressedCVBridge:
+    def __init__(self):
+        if not HAS_CV2:
+            raise ImportError(
+                "Computer Vision features require 'numpy' and 'opencv-python'. "
+                "Please install them manually or use: uvpip install zros[cv2]"
+            )
+
     def cv2_to_zimgmsg(self, cv_image):
         """
         Converts a OpenCV image to compressed bytes.
@@ -25,6 +38,13 @@ class zCompressedCVBridge:
             return None
 
 class zCvBridge:
+    def __init__(self):
+        if not HAS_CV2:
+            raise ImportError(
+                "Computer Vision features require 'numpy' and 'opencv-python'. "
+                "Please install them manually or use: uv pip install zros[cv2]"
+            )
+
     def cv2_to_zimgmsg(self, cv_image):
         """
         Converts a OpenCV image to a raw bytes dictionary message.

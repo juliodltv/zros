@@ -21,7 +21,6 @@ classifiers = [
 ]
 
 dependencies = [
-    "opencv-python>=4.13.0.92",
     "pyzmq>=27.1.0",
 ]
 
@@ -32,6 +31,10 @@ zros_echo = "zros.zros_echo:main"
 zros_status = "zros.zros_status:main"
 
 [project.optional-dependencies]
+cv2 = [
+    "opencv-python>=4.13.0.92",
+    "numpy>=1.20",
+]
 docs = [
     "mkdocs==1.6.1",
     "mkdocs-material==9.7.2",

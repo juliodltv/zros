@@ -53,14 +53,18 @@ SAM3 Object Detection in ROS Noetic:
 ### From PyPI (Recommended)
 ```bash
 uv venv
+# For basic ZROS (no computer vision features):
 uv pip install zros
+
+# To include OpenCV and Numpy for image transport:
+uv pip install zros[cv2]
 ```
 
 ### From Source
 ```bash
 git clone https://github.com/juliodltv/zros.git
 cd zros
-uv sync
+uv sync # Add --extra cv2 for image transport support
 ```
 
 ## Quick Start

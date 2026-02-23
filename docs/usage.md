@@ -2,6 +2,8 @@
 
 ZROS mimics the ROS 2 workflow but uses ZeroMQ for communication.
 
+!!! Note
+    The following examples use `zCompressedCVBridge` and `cv2`. Make sure you have installed ZROS with Computer Vision support first: `uv pip install zros[cv2]`
 
 ### Create a Publisher (publisher.py)
 ```python

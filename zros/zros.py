@@ -10,7 +10,7 @@ except ImportError:
     HAS_CV2 = False
 
 
-class zCompressedCVBridge:
+class zCompressedCvBridge:
     def __init__(self):
         if not HAS_CV2:
             raise ImportError(
@@ -34,7 +34,7 @@ class zCompressedCVBridge:
             image_array = np.frombuffer(image_bytes, dtype=np.uint8)
             return cv2.imdecode(image_array, cv2.IMREAD_UNCHANGED)
         except Exception as e:
-            print(f"zCompressedCVBridge Error: {e}")
+            print(f"zCompressedCvBridge Error: {e}")
             return None
 
 class zCvBridge:

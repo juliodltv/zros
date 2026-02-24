@@ -44,7 +44,7 @@ Run your hardware and control loops in their native ROS1 environment. Run your m
 sjmp@pc:~$ rostopic pub -1 /detect_object/prompt std_msgs/String "data: 'hand'"
 ```
 SAM3 Object Detection in ROS Noetic:
-![SAM3 Object Detection]("https://github.com/user-attachments/assets/bba33a8b-52e0-4bc9-a14b-d5c61150acba")
+![SAM3 Object Detection](https://github.com/user-attachments/assets/bba33a8b-52e0-4bc9-a14b-d5c61150acba)
 
 *Read the [full guide on Bridging Systems](https://juliodltv.github.io/zros/bridge_case/) in the documentation.*
 

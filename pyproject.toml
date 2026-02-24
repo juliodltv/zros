@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zros"
-version = "0.1.11"
-description = "ZROS: ZeroMQ ROS-like framework"
+version = "0.1.12"
+description = "ZROS: A fast, lightweight ROS-like library"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}

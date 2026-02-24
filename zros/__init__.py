@@ -1,1 +1,1 @@
-from .zros import zNode, zCompressedCVBridge, zCvBridge
+from .zros import zNode, zCompressedCvBridge, zCvBridge

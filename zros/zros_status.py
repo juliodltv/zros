@@ -5,7 +5,7 @@ from zros import zNode
 class ZrosStatus(zNode):
     def __init__(self):
         super().__init__(f"zros_status_{int(time.time())}")
-        self.create_subscriber("_zros/graph", self.graph_callback)
+        self.create_subscriber("_zros/graph", self.graph_callback, queue_size=0)
         self.nodes = {}
 
     def graph_callback(self, payload):
@@ -18,7 +18,7 @@ class ZrosStatus(zNode):
 
     def print_status_and_exit(self):
         if not self.nodes:
-            print("No active nodes found.")
+            print("No active nodes found. (Node graph discovery requires _zros/graph broadcasting)")
         else:
             for name, data in sorted(self.nodes.items()):
                 print(f"- {name}")

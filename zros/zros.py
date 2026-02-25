@@ -106,7 +106,6 @@ class zNode:
 
         # Socket for Subscribing (Connects to zroscore output)
         self.sub_socket = self.context.socket(zmq.SUB)
-        self.sub_socket.setsockopt(zmq.CONFLATE, 1)
         self.sub_socket.connect(f"tcp://{ip}:{port_sub}")
 
         self.poller = zmq.Poller()
@@ -115,24 +114,43 @@ class zNode:
         self.callbacks = {}
         self.timers = []
         self.publishers = []
+        self._queue_sizes: dict = {}  # topic → max queue size (0 = unlimited)
         self.running = True
+
+        self._graph_pub = self.create_publisher("_zros/graph")
+        self.create_timer(1.0, self._broadcast_graph_info)
+
+    def _broadcast_graph_info(self):
+        pubs = [p.topic for p in self.publishers if not p.topic.startswith("_zros")]
+        subs = [t for t in self._queue_sizes if not t.startswith("_zros")]
+        self._graph_pub.publish({
+            "name": self.name,
+            "publishers": pubs,
+            "subscribers": subs,
+        })
 
     def create_publisher(self, topic):
         pub = Publisher(self.pub_socket, topic)
         self.publishers.append(pub)
         return pub
 
-    def create_subscriber(self, topic, callback=None):
+    def create_subscriber(self, topic, callback=None, queue_size=1):
         """
         Args:
             topic: Topic name to subscribe to.
             callback: Function to call when a message is received (optional).
                       Signature: callback(payload)
+            queue_size: Maximum number of messages to buffer per topic.
+                        - 1 (default): keep only the latest message —
+                          good for high-frequency state/sensor data.
+                        - N > 1: keep the last N messages in order.
+                        - 0: unlimited — process every message in order —
+                          use for commands or events that must not be dropped.
         """
         self.sub_socket.setsockopt(zmq.SUBSCRIBE, topic.encode('utf-8'))
-        
         if callback:
             self.callbacks[topic] = callback
+        self._queue_sizes[topic] = queue_size
 
     def create_timer(self, period, callback):
         """
@@ -169,28 +187,42 @@ class zNode:
     def spin_once(self, timeout=0):
         """
         Checks for incoming messages.
-        If a callback is registered for the topic, it executes it.
-        Returns: (topic, payload) or None
+        Drains the full queue and applies per-topic queue_size limits,
+        then fires callbacks.
+        Returns: (topic, payload) of the last processed message, or None.
         """
         socks = dict(self.poller.poll(timeout))
-        if self.sub_socket in socks:
+        if self.sub_socket not in socks:
+            return None
+
+        collected = {}  # topic → [payload, ...]
+        while True:
             try:
-                # Receive [Topic, PickledPayload]
                 topic_bytes, pickled_payload = self.sub_socket.recv_multipart(flags=zmq.NOBLOCK)
                 topic = topic_bytes.decode('utf-8')
                 payload = pickle.loads(pickled_payload)
-                
-                # Execute callback if exists
-                if topic in self.callbacks:
-                    self.callbacks[topic](payload)
-                    
-                return topic, payload
+                collected.setdefault(topic, []).append(payload)
             except zmq.Again:
-                return None
+                break
             except Exception as e:
                 print(f"Error decoding message: {e}")
-                return None
-        return None
+                break
+
+        last = None
+        for topic, payloads in collected.items():
+            queue_size = self._queue_sizes.get(topic, 1)
+            if queue_size == 0:
+                trimmed = payloads           # unlimited: process all
+            elif queue_size == 1:
+                trimmed = [payloads[-1]]     # keep only latest
+            else:
+                trimmed = payloads[-queue_size:]  # keep last N
+            for payload in trimmed:
+                if topic in self.callbacks:
+                    self.callbacks[topic](payload)
+                last = (topic, payload)
+
+        return last
         
     def destroy_node(self):
         self.pub_socket.close()

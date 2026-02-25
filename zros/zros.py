@@ -99,26 +99,22 @@ class zNode:
     def __init__(self, name, ip="127.0.0.1", port_pub=5556, port_sub=5555):
         self.name = name
         self.context = zmq.Context()
-        
+
         # Socket for Publishing (Connects to zroscore input)
         self.pub_socket = self.context.socket(zmq.PUB)
         self.pub_socket.connect(f"tcp://{ip}:{port_pub}")
-        
+
         # Socket for Subscribing (Connects to zroscore output)
         self.sub_socket = self.context.socket(zmq.SUB)
         self.sub_socket.connect(f"tcp://{ip}:{port_sub}")
-        
+
         self.poller = zmq.Poller()
         self.poller.register(self.sub_socket, zmq.POLLIN)
-        
+
         self.callbacks = {}
         self.timers = []
         self.publishers = []
         self.running = True
-        
-        # Broadcast graph info every 1s
-        self.create_timer(1.0, self._broadcast_graph_info)
-        self._graph_pub = Publisher(self.pub_socket, "_zros/graph")
 
     def create_publisher(self, topic):
         pub = Publisher(self.pub_socket, topic)
@@ -152,21 +148,6 @@ class zNode:
         self.timers.append(timer)
         return timer
 
-    def _broadcast_graph_info(self):
-        """
-        Broadcasts the node's graph information (name, pubs, subs).
-        """
-        graph_info = {
-            "name": self.name,
-            "publishers": [p.topic for p in self.publishers],
-            "subscribers": list(self.callbacks.keys())
-        }
-        # We use a special internal publisher for this to avoid infinite recursion
-        # if we were tracking *all* publishers including this one.
-        # But here _graph_pub is arguably a publisher too. 
-        # For simplicity, we don't add _graph_pub to self.publishers list.
-        self._graph_pub.publish(graph_info)
-        
     def spin(self):
         """
         Blocks and processes messages and timers forever until node is stopped.

@@ -90,20 +90,6 @@ uv run zros_status
       - video_topic
 ```
 
-### zros_graph
-
-!!! Warning
-    This feature has been moved to the `future` directory (available in the repository) because the dependencies increase the package size. If you want to use it, install the `networkx` and `matplotlib` dependencies and run `uv run future/zros_graph.py`.
-
-
-Visualizes the active nodes and their connections (Publishers -> Topics -> Subscribers).
-
-```bash
-uv run zros_graph
-```
-
-![ZROS Graph](assets/zros_graph.png)
-
 ### zros_pub
 
 Publishes a dictionary payload to a topic from the terminal.

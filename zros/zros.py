@@ -106,6 +106,7 @@ class zNode:
 
         # Socket for Subscribing (Connects to zroscore output)
         self.sub_socket = self.context.socket(zmq.SUB)
+        self.sub_socket.setsockopt(zmq.CONFLATE, 1)
         self.sub_socket.connect(f"tcp://{ip}:{port_sub}")
 
         self.poller = zmq.Poller()
@@ -132,11 +133,6 @@ class zNode:
         
         if callback:
             self.callbacks[topic] = callback
-            
-        try:
-            self.sub_socket.setsockopt(zmq.CONFLATE, 1)
-        except zmq.ZMQError:
-            pass
 
     def create_timer(self, period, callback):
         """

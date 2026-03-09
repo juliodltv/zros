@@ -1,4 +1,5 @@
 import pickle
+import threading
 import time
 from typing import Any, Callable, Dict, List, Optional, Tuple
 
@@ -60,16 +61,18 @@ class zCvBridge(_CvBridgeBase):
 
 
 class Publisher:
-    def __init__(self, socket: zmq.Socket, topic: str) -> None:
+    def __init__(self, socket: zmq.Socket, topic: str, lock: threading.Lock) -> None:
         self.socket = socket
         self.topic = topic
+        self._lock = lock
 
     def publish(self, payload: Any) -> None:
         """Publishes an arbitrary Python object to this topic."""
-        self.socket.send_multipart([
-            self.topic.encode('utf-8'),
-            pickle.dumps(payload),
-        ])
+        with self._lock:
+            self.socket.send_multipart([
+                self.topic.encode('utf-8'),
+                pickle.dumps(payload),
+            ])
 
 
 class Timer:
@@ -112,6 +115,7 @@ class zNode:
         self.publishers: List[Publisher] = []
         self._queue_sizes: Dict[str, int] = {}  # topic → max queue size (0 = unlimited)
         self.running = True
+        self._pub_lock = threading.Lock()  # protects pub_socket across threads
 
         self._graph_pub = self.create_publisher("_zros/graph")
         self.create_timer(1.0, self._broadcast_graph_info)
@@ -126,7 +130,7 @@ class zNode:
         })
 
     def create_publisher(self, topic: str) -> Publisher:
-        pub = Publisher(self.pub_socket, topic)
+        pub = Publisher(self.pub_socket, topic, self._pub_lock)
         self.publishers.append(pub)
         return pub
 
@@ -194,7 +198,11 @@ class zNode:
         collected: Dict[str, List[Any]] = {}
         while True:
             try:
-                topic_bytes, pickled_payload = self.sub_socket.recv_multipart(flags=zmq.NOBLOCK)
+                parts = self.sub_socket.recv_multipart(flags=zmq.NOBLOCK)
+                if len(parts) != 2:
+                    print(f"[zros] Unexpected frame count ({len(parts)}), skipping")
+                    continue
+                topic_bytes, pickled_payload = parts
                 topic = topic_bytes.decode('utf-8')
                 payload = pickle.loads(pickled_payload)
                 collected.setdefault(topic, []).append(payload)
@@ -202,7 +210,7 @@ class zNode:
                 break
             except Exception as e:
                 print(f"Error decoding message: {e}")
-                break
+                continue
 
         last = None
         for topic, payloads in collected.items():

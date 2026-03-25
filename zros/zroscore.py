@@ -1,22 +1,31 @@
+import sys
+import errno
 import zmq
 
 def main():
     context = zmq.Context()
-
-    # Socket facing clients (Subscribers)
     frontend = context.socket(zmq.XPUB)
-    frontend.bind("tcp://*:5555")  # Subscribers connect here (standard port)
-
-    # Socket facing services (Publishers)
     backend = context.socket(zmq.XSUB)
-    backend.bind("tcp://*:5556")   # Publishers connect here
+
+    # Try to bind before starting the proxy.
+    try:
+        frontend.bind("tcp://*:5555")
+        backend.bind("tcp://*:5556")
+    except zmq.error.ZMQError as e:
+        frontend.close()
+        backend.close()
+        context.term()
+        if e.errno == errno.EADDRINUSE:
+            print("zroscore is already running. Using existing instance.")
+            sys.exit(0)
+        print(f"zroscore failed to bind: {e}")
+        sys.exit(1)
 
     print("zroscore started...")
     print("Subscribers connect to port 5555")
     print("Publishers connect to port 5556")
 
     try:
-        # Start the proxy
         zmq.proxy(frontend, backend)
     except KeyboardInterrupt:
         print("Stopping zroscore...")

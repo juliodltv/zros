@@ -72,14 +72,14 @@ uv sync # Add --extra cv2 for image transport support
 ### Create a Publisher (publisher.py)
 
 ```python
-from zros import zNode, zCompressedCVBridge
+from zros import zNode, zCompressedCvBridge
 import cv2
 
 class CameraPublisher(zNode):
     def __init__(self):
         super().__init__("camera_pub")
         self.pub = self.create_publisher("video_topic")
-        self.bridge = zCompressedCVBridge()
+        self.bridge = zCompressedCvBridge()
         self.cap = cv2.VideoCapture(0)
         self.create_timer(1/60, self.timer_callback)
 
@@ -99,13 +99,13 @@ if __name__ == "__main__":
 
 ### Create a Subscriber (subscriber.py)
 ```python
-from zros import zNode, zCompressedCVBridge
+from zros import zNode, zCompressedCvBridge
 import cv2
 
 class VideoSubscriber(zNode):
     def __init__(self):
         super().__init__("video_sub")
-        self.bridge = zCompressedCVBridge()
+        self.bridge = zCompressedCvBridge()
         self.create_subscriber("video_topic", self.callback)
 
     def callback(self, msg):

@@ -1,0 +1,77 @@
+:root {
+  --md-primary-fg-color: #DF0000;
+  --md-primary-fg-color--dark: #DF0000;
+  --md-primary-fg-color--light: #DF0000;
+  --md-typeset-a-color: #DF0000;
+  --md-default-bg-color: #22314E;
+  --md-default-fg-color: #ffffff;
+  --md-accent-fg-color: #DF0000;
+  --md-accent-bg-color: #DF0000;
+  --md-typeset-color: #ffffff;
+  --md-typeset-heading-color: #ffffff;
+  --md-code-fg-color: #ffffff;
+  /* --md-typeset-a-color:         #4CAF50; */
+  /* #22314E ros color*/
+}
+
+/* 
+[data-md-color-scheme="slate"] {
+  --md-default-fg-color: #ffffff;
+  --md-typeset-color: #ffffff;
+  --md-code-fg-color: #ffffff;
+} */
+
+.md-typeset h1 {
+  color: #ffffff;
+}
+
+.md-typeset h2 {
+  color: #ffffff;
+}
+
+/* Style for table headers (first row) */
+.md-content table th {
+  background-color: #005da8;
+  /* background-color: #4CAF50; */
+  color: white;
+}
+
+/* Increase font size for tables using the specific selector */
+.md-typeset table:not([class]) {
+  font-size: 1.0em;
+  /* Increased from .9rem to 1.0em for better visibility */
+}
+
+/* Set font size for plain text (paragraphs) */
+.md-typeset p {
+  font-size: 1.0em;
+}
+
+/* Set font size for callouts (admonitions) */
+.md-typeset .admonition {
+  font-size: 1.0em;
+}
+
+.md-typeset code {
+  color: #ffffff;
+}
+
+/* Set author images circular */
+.grid.cards figure img {
+  border-radius: 50%;
+}
+
+.wy-side-nav-search {
+  background-color: #005da8;
+}
+
+.highlight span.filename {
+  background-color: #005da8;
+}
+
+/* img {
+    border-style: none;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+} */
